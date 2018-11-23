@@ -38,7 +38,7 @@ export default class HomeScreen extends React.Component {
     button: {
       backgroundColor: '#eee',
       padding: 10,
-      borderRadius: 5,
+      borderRadius: 4,
       color: '#111',
       margin: 10,
       width: '80%',
