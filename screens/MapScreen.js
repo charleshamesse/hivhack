@@ -1,7 +1,11 @@
 import React from 'react';
 import { Platform, Button, TouchableOpacity, Text, View, StyleSheet, TextInput} from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
+import axios from 'axios';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+const Marker = MapView.Marker;
+const API_BASE_URL = 'http://54.37.66.137:1338/';
 
 export default class MapScreen extends React.Component {
     static navigationOptions = {
@@ -11,7 +15,7 @@ export default class MapScreen extends React.Component {
     state = {
       location: null,
       errorMessage: null,
-      
+      distributionCenters: [],
     };
   
     componentWillMount() {
@@ -21,6 +25,38 @@ export default class MapScreen extends React.Component {
         });
       } else {
         this._getLocationAsync();
+      }
+    }
+
+    componentDidMount() {
+      // Get distribution centers
+      axios.get(`${API_BASE_URL}distributioncenters`)
+        .then(res => {
+          const distributionCenters = res.data;
+          console.log(distributionCenters);
+          this.setState({ distributionCenters });
+        })
+    }
+
+    _renderDistributionCenters = () => {
+      if(this.state.distributionCenters) {
+        return this.state.distributionCenters.map((center, i) => (
+          <Marker key={i} title={center.dc_name} coordinate={{
+            latitude: center.dc_lat,
+            longitude: center.dc_long
+          }}>
+          <MaterialCommunityIcons name="hospital-marker" size={32} color="red" />
+          <MapView.Callout>
+            <View>
+              <TouchableOpacity
+                style={styles.markerButton}
+                onPress={() => this.props.navigation.navigate('RequestDetails')}>
+                <Text style={styles.buttonText}>Go</Text>
+              </TouchableOpacity>
+            </View>
+        </MapView.Callout>
+         </Marker>
+        ));
       }
     }
   
@@ -51,13 +87,17 @@ export default class MapScreen extends React.Component {
               latitudeDelta: 0.0461,
               longitudeDelta: 0.0210,
               }}
-          />
+              showsUserLocation={true}
+              followsUserLocation={true}
+              zoomEnabled={true}>
+              {this._renderDistributionCenters()}
+              </MapView>
           <View 
             style={styles.textView}
           >
           <TextInput
             style={styles.textInput}
-          placeholder={`Pick up location..`} />
+          placeholder={`Medical facility..`} />
 
         <TouchableOpacity
           style={styles.button}
@@ -85,7 +125,8 @@ export default class MapScreen extends React.Component {
     textView: {
       position: 'absolute',
       left: 30,
-      top: 30,
+      bottom: 60,
+      fontSize: 15,
       right: 30,
       flexDirection: 'row',
     },
@@ -93,16 +134,27 @@ export default class MapScreen extends React.Component {
       padding: 10,
       borderRadius: 4,
       flexGrow: 3,
+      fontSize: 15,
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
       backgroundColor: 'rgba(255,255,255,0.8)',
     },
     button: {
       padding: 10,
       borderRadius: 4,
-      borderColor: 'rgba(100,100,100,0.5)',
+      borderColor: 'rgba(150,150,150,0.5)',
       borderLeftWidth: 1,
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
-      backgroundColor: 'rgba(255,255,255,0.8)'
+      backgroundColor: 'rgba(255,255,255,0.9)'
+    },
+    markerButton: {
+      padding: 10,
+      borderRadius: 4,
+      backgroundColor: 'rgba(255,255,255,0.9)'
+    },
+    buttonText: {
+      fontSize: 15,
     },
     container: {
       position: 'relative',
