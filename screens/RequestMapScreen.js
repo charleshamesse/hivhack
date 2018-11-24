@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, Button, TouchableOpacity, Text, View, StyleSheet, TextInput} from 'react-native';
+import { Platform, Button, TouchableOpacity, Text, View, StyleSheet, TextInput, Dimensions} from 'react-native';
 import { Constants, Location, Permissions, MapView } from 'expo';
 import axios from 'axios';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -46,13 +46,18 @@ export default class MapScreen extends React.Component {
             longitude: center.dc_long
           }}>
           <MaterialCommunityIcons name="hospital-marker" size={32} color="red" />
-          <MapView.Callout>
-            <View>
-              <TouchableOpacity
-                style={styles.markerButton}
-                onPress={() => this.props.navigation.navigate('RequestDetails')}>
-                <Text style={styles.buttonText}>Go</Text>
-              </TouchableOpacity>
+          <MapView.Callout style={styles.markerCallout}>
+            <View style={styles.markerView}>
+              <View
+                style={styles.markerButton}>
+                <Text style={styles.buttonText}>{center.dc_name}</Text>
+                <Text style={styles.buttonTextInfo}>{center.de_city}, {center.dc_country}</Text>
+                <TouchableOpacity 
+                  style={styles.buttonRequest}
+                  onPress={() => this.setState()}>
+                  <Text style={styles.buttonTextRequest}>Request medicine</Text>
+                </TouchableOpacity>
+              </View>
             </View>
         </MapView.Callout>
          </Marker>
@@ -148,13 +153,37 @@ export default class MapScreen extends React.Component {
       borderBottomLeftRadius: 0,
       backgroundColor: 'rgba(255,255,255,0.9)'
     },
+    markerCallout: {
+      flex: 1,
+    },
+    markerView: {
+      flex: 1,
+    },
     markerButton: {
       padding: 10,
+      width: Dimensions.get('window').width * 0.8,
       borderRadius: 4,
       backgroundColor: 'rgba(255,255,255,0.9)'
     },
     buttonText: {
       fontSize: 15,
+      fontWeight: 'bold',
+      marginBottom: 5,
+    },
+    buttonTextInfo: {
+      fontSize: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: 'black',
+    },
+    buttonRequest: {
+      backgroundColor: '#111',
+      marginTop: 10,
+      borderRadius: 4,
+      padding: 10,
+    },
+    buttonTextRequest: {
+      fontSize: 15,
+      color: '#fff',
     },
     container: {
       position: 'relative',

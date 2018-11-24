@@ -13,17 +13,13 @@ import {
 
 export default class HomeScreen extends React.Component {
     static navigationOptions = {
-      title: 'Skyler',
+      title: 'Request Detail',
     };
     render() {
       const {navigate} = this.props.navigation;
       return (
         <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.props.navigation.navigate('RequestDetail')}>
-          <Text style={styles.buttonText}>I deliver</Text>
-        </TouchableOpacity>
+          <Text>Yooow</Text>
         <TouchableOpacity
           style={styles.button}
           onPress={() => this.props.navigation.navigate('RequestMap')}>
@@ -35,19 +31,7 @@ export default class HomeScreen extends React.Component {
   }
 
   const styles = StyleSheet.create({
-    button: {
-      backgroundColor: '#eee',
-      padding: 10,
-      borderRadius: 4,
-      color: '#111',
-      margin: 10,
-      width: '80%',
-      alignItems: 'center'
-    },
-    buttonText: {
-      fontSize: 30,
-      color: '#333'
-    },
+
     container: {
       flex: 1,
       backgroundColor: '#fff',
