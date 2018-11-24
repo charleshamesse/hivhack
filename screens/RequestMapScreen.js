@@ -17,6 +17,15 @@ export default class MapScreen extends React.Component {
       errorMessage: null,
       distributionCenters: [],
     };
+
+    constructor() {
+      super();
+      this.toDetails = this.toDetails.bind(this);
+    }
+
+    toDetails = (coords) => {
+      return this.props.navigation.navigate('RequestDetail', { distributionCenter: coords })
+    }
   
     componentWillMount() {
       if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -46,15 +55,16 @@ export default class MapScreen extends React.Component {
             longitude: center.dc_long
           }}>
           <MaterialCommunityIcons name="hospital-marker" size={32} color="red" />
-          <MapView.Callout style={styles.markerCallout}>
+          <MapView.Callout 
+            style={styles.markerCallout}
+            onPress={() => this.toDetails(center)}>
             <View style={styles.markerView}>
               <View
                 style={styles.markerButton}>
                 <Text style={styles.buttonText}>{center.dc_name}</Text>
                 <Text style={styles.buttonTextInfo}>{center.de_city}, {center.dc_country}</Text>
                 <TouchableOpacity 
-                  style={styles.buttonRequest}
-                  onPress={() => this.setState()}>
+                  style={styles.buttonRequest}>
                   <Text style={styles.buttonTextRequest}>Request medicine</Text>
                 </TouchableOpacity>
               </View>
@@ -105,8 +115,7 @@ export default class MapScreen extends React.Component {
           placeholder={`Medical facility..`} />
 
         <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.props.navigation.navigate('RequestDetails')}>
+          style={styles.button}>
           <Text style={styles.buttonText}>Go</Text>
         </TouchableOpacity>
           </View>
